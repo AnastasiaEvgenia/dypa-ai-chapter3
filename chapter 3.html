@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+	<meta charset="UTF-8">
+	<title>Quiz: Τεχνητή Νοημοσύνη & 4η Βιομηχανική Επανάσταση</title>
+	<style>
+		body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; line-height: 1.6; }
+		h2 { text-align: center; }
+		.question { margin-bottom: 25px; padding: 15px; border: 1px solid #ccc; border-radius: 8px; }
+		.choices label { display: block; margin: 5px 0; cursor: pointer; }
+		.correct { color: green; font-weight: bold; }
+		.incorrect { color: red; font-weight: bold; }
+		#submitBtn { display: block; margin: 30px auto; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+		#result { text-align: center; font-weight: bold; margin-top: 20px; font-size: 18px; }
+	</style>
+</head>
+<body>
+<h2>Quiz: Κεφάλαιο 3: Η Αξία των Δεδομένων για την Τεχνητή Νοημοσύνη</h2>
+<div id="quiz"></div>
+<button id="submitBtn">Υπολογισμός Αποτελέσματος</button>
+<div id="result"></div>
+
+<script>
+	const questions = [
+		{question: 'Ποιος είναι ο κύριος ρόλος των δεδομένων στην Τεχνητή Νοημοσύνη;', choices: {A: 'Να επιβραδύνουν τη λήψη αποφάσεων', B: 'Να λειτουργούν ως καύσιμο για εκπαίδευση και πρόβλεψη', C: 'Να αντικαθιστούν τα αλγοριθμικά μοντέλα', D: 'Να μειώνουν την ακρίβεια των συστημάτων'}, answer: 'B'},
+		{question: 'Ποια κατηγορία δεδομένων περιλαμβάνει email, εικόνες και βίντεο;', choices: {A: 'Ημιδομημένα', B: 'Δομημένα', C: 'Μη δομημένα', D: 'Ανομοιόμορφα'}, answer: 'C'},
+		{question: 'Ποια τεχνική χρησιμοποιείται για καθαρισμό δεδομένων;', choices: {A: 'Data Encryption', B: 'Data Cleaning', C: 'Data Normalization', D: 'Data Duplication'}, answer: 'B'},
+		{question: 'Ποιος είναι ο κύριος στόχος της κανονικοποίησης δεδομένων;', choices: {A: 'Να αποκρύψει τις τιμές', B: 'Να μειώσει bias στις μεταβλητές', C: 'Να φέρει τιμές σε κοινή κλίμακα', D: 'Να διαγράψει ανωμαλίες'}, answer: 'C'},
+		{question: 'Τι είναι τα μεταδεδομένα;', choices: {A: 'Δεδομένα που περιγράφουν άλλα δεδομένα', B: 'Ακατέργαστα δεδομένα', C: 'Σφάλματα σε πίνακες', D: 'Αποθηκευμένες εντολές'}, answer: 'A'},
+		{question: 'Ποιο είναι πλεονέκτημα των ανοιχτών δεδομένων (Open Data);', choices: {A: 'Περιορίζουν την ανάλυση', B: 'Απαιτούν αποκλειστική άδεια χρήσης', C: 'Προωθούν διαφάνεια και καινοτομία', D: 'Μειώνουν την προσβασιμότητα'}, answer: 'C'},
+		{question: 'Ποια τεχνολογία είναι βασική για αποθήκευση Big Data;', choices: {A: 'Hadoop', B: 'Excel', C: 'Tableau', D: 'SPSS'}, answer: 'A'},
+		{question: 'Ποια έννοια εξασφαλίζει την ποιότητα και ασφάλεια δεδομένων;', choices: {A: 'Data Governance', B: 'Data Duplication', C: 'Data Scraping', D: 'Data Replication'}, answer: 'A'},
+		{question: 'Ποιο είδος μάθησης απαιτεί ετικετοποιημένα δεδομένα;', choices: {A: 'Unsupervised Learning', B: 'Supervised Learning', C: 'Reinforcement Learning', D: 'Federated Learning'}, answer: 'B'},
+		{question: 'Ποιο είναι το κύριο μειονέκτημα του batch ETL;', choices: {A: 'Υψηλό latency στην ενημέρωση δεδομένων', B: 'Μειωμένη ακρίβεια στα joins', C: 'Αυξημένη κατανάλωση CPU', D: 'Αδυναμία scaling'}, answer: 'A'},
+		{question: 'Ποια τεχνική χρησιμοποιείται για αποτροπή εισαγωγής διπλών εγγραφών;', choices: {A: 'Primary Keys και Constraints', B: 'Data Lake Partitioning', C: 'Streaming Joins', D: 'Data Sampling'}, answer: 'A'},
+		{question: 'Ποιο χαρακτηριστικό συνδέεται με το Data Veracity;', choices: {A: 'Αξιοπιστία, αυθεντικότητα και ακρίβεια', B: 'Όγκος δεδομένων', C: 'Ταχύτητα μεταφοράς', D: 'Ποικιλία μορφών'}, answer: 'A'},
+		{question: 'Ποια είναι η κύρια διαφορά μεταξύ structured και unstructured data;', choices: {A: 'Η ύπαρξη σαφούς schema στα structured', B: 'Η χρήση AI για αποθήκευση', C: 'Η κανονικοποίηση τύπων', D: 'Η σύνδεση με APIs'}, answer: 'A'},
+		{question: 'Ποια τεχνική βοηθά στην κατανόηση σχέσεων μεταβλητών;', choices: {A: 'Correlation Matrix Analysis', B: 'Noise Injection', C: 'Data Hashing', D: 'Batch Encoding'}, answer: 'A'},
+		{question: 'Ποιο metric μετρά την πληρότητα ενός dataset;', choices: {A: 'Completeness Score', B: 'Latency Rate', C: 'Bias Index', D: 'Entropy'}, answer: 'A'},
+		{question: 'Ποια ιδιότητα των Big Data σχετίζεται με την ταχύτητα παραγωγής τους;', choices: {A: 'Volume', B: 'Veracity', C: 'Velocity', D: 'Variety'}, answer: 'C'},
+		{question: 'Ποια μέθοδος ανιχνεύει ακραίες τιμές (outliers);', choices: {A: 'Clustering', B: 'Z-Score', C: 'Sampling', D: 'Encoding'}, answer: 'B'},
+		{question: 'Ποιο εργαλείο χρησιμοποιείται για οπτικοποίηση δεδομένων;', choices: {A: 'TensorFlow', B: 'Power BI', C: 'Kubernetes', D: 'Git'}, answer: 'B'},
+		{question: 'Ποιο πρόβλημα προκαλεί η ύπαρξη bias στο dataset;', choices: {A: 'Αύξηση υπολογιστικής ισχύος', B: 'Μειωμένη γενίκευση μοντέλου', C: 'Καλύτερη ακρίβεια', D: 'Αύξηση ταχύτητας'}, answer: 'B'},
+		{question: 'Ποια διαδικασία προετοιμάζει δεδομένα για μοντελοποίηση;', choices: {A: 'Data Preprocessing', B: 'Model Deployment', C: 'Hyperparameter Tuning', D: 'Cloud Sync'}, answer: 'A'},
+		{question: 'Ποια μέθοδος επιτρέπει μετατροπή κατηγορικών τιμών σε αριθμητικές;', choices: {A: 'One-Hot Encoding', B: 'Normalization', C: 'Filtering', D: 'Batching'}, answer: 'A'},
+		{question: 'Ποιο από τα παρακάτω ΔΕΝ είναι χαρακτηριστικό των Big Data;', choices: {A: 'Volume', B: 'Velocity', C: 'Vulnerability', D: 'Variety'}, answer: 'C'},
+		{question: 'Ποια μέτρηση δείχνει τη χρονική επικαιρότητα των δεδομένων;', choices: {A: 'Timeliness', B: 'Consistency', C: 'Accuracy', D: 'Integrity'}, answer: 'A'},
+		{question: 'Ποιο πλαίσιο προστατεύει τα προσωπικά δεδομένα στην Ε.Ε.;', choices: {A: 'ISO 27001', B: 'GDPR', C: 'Data Act', D: 'PCI-DSS'}, answer: 'B'},
+		{question: 'Ποια προσέγγιση μειώνει τη διαρροή προσωπικών δεδομένων;', choices: {A: 'Federated Learning', B: 'Deep Clustering', C: 'Transfer Learning', D: 'Autoencoding'}, answer: 'A'},
+		{question: 'Ποιο είναι το κύριο όφελος της κατανόησης της αξίας των δεδομένων;', choices: {A: 'Διευκόλυνση τεκμηριωμένων αποφάσεων', B: 'Αποφυγή συλλογής πληροφοριών', C: 'Μείωση επενδύσεων σε AI', D: 'Περιορισμός καινοτομίας'}, answer: 'A'},
+		{question: 'Τι περιγράφει το Data Lineage;', choices: {A: 'Κρυπτογράφηση αρχείων', B: 'Τη διαδρομή και μετασχηματισμούς των δεδομένων άκρη-σε-άκρη', C: 'Τον όγκο δεδομένων', D: 'Την ταχύτητα συλλογής'}, answer: 'B'},
+		{question: 'Ποια πρακτική εξασφαλίζει ιχνηλασιμότητα αλλαγών σε datasets;', choices: {A: 'Sampling', B: 'Normalization', C: 'One-Hot Encoding', D: 'Data Versioning (π.χ. DVC, LakeFS)'}, answer: 'D'},
+		{question: 'Τι είναι το Concept Drift;', choices: {A: 'Αλλαγή API', B: 'Ασυνέπεια τύπων', C: 'Μεταβολή της υποκείμενης σχέσης εισόδων-στόχου στο χρόνο', D: 'Απώλεια packets'}, answer: 'C'},
+		{question: 'Ποιο πρόβλημα επιχειρεί να επιλύσει το Data Mesh;', choices: {A: 'Τη συγκεντρωτική εξάρτηση από κεντρικές data ομάδες', B: 'Τη δημιουργία πολλών data marts', C: 'Την αναπαραγωγή ίδιων datasets', D: 'Την αύξηση latency στα APIs'}, answer: 'A'},
+		{question: 'Ποιο είναι το βασικό πλεονέκτημα του Data Fabric σε σχέση με παραδοσιακά data lakes;', choices: {A: 'Δημιουργεί πολλαπλά silos', B: 'Ενοποιεί δεδομένα από ετερογενείς πηγές σε ενιαίο πλαίσιο πρόσβασης', C: 'Περιορίζει την αυτοματοποίηση', D: 'Απαιτεί χειροκίνητη επαλήθευση'}, answer: 'B'},
+		{question: 'Ποια διαδικασία εξασφαλίζει ότι ένα dataset δεν περιέχει ευαίσθητα προσωπικά δεδομένα;', choices: {A: 'Data Anonymization', B: 'Data Clustering', C: 'Data Warehousing', D: 'Data Augmentation'}, answer: 'A'},
+		{question: 'Ποια πρακτική προστατεύει δεδομένα κατά τη μεταφορά;', choices: {A: 'TLS Encryption', B: 'PCA Reduction', C: 'Anonymization', D: 'Masking'}, answer: 'A'},
+		{question: 'Ποια μέθοδος χρησιμοποιείται για data validation σε real time;', choices: {A: 'Schema Registry (π.χ. Confluent)', B: 'Manual SQL Checks', C: 'Nightly ETL', D: 'Periodic QA'}, answer: 'A'},
+		{question: 'Ποια τεχνική διασφαλίζει ότι τα μοντέλα AI τροφοδοτούνται με καθαρά δεδομένα;', choices: {A: 'Data Quality Gates στο pipeline', B: 'Data Encryption', C: 'Feature Scaling', D: 'Encoding'}, answer: 'A'},
+		{question: 'Ποιο χαρακτηριστικό διαφοροποιεί το streaming data από το batch;', choices: {A: 'Συνεχής ροή δεδομένων σε near-real time', B: 'Επεξεργασία σε μεγάλα χρονικά παράθυρα', C: 'Χειροκίνητη επαλήθευση', D: 'Αποθήκευση χωρίς schema'}, answer: 'A'},
+		{question: 'Schema-on-read χρησιμοποιείται κυρίως σε;', choices: {A: 'Data Lakes', B: 'Relational Warehouses', C: 'OLTP βάσεις', D: 'Message Queues'}, answer: 'A'},
+		{question: 'Ποια τεχνική ανίχνευσης αλλαγών σε πηγές δεδομένων είναι βέλτιστη για near-real time φόρτωση;', choices: {A: 'Full reload', B: 'Batch merges', C: 'Manual diffs', D: 'Change Data Capture (CDC)'}, answer: 'D'},
+		{question: 'Ρόλος Data Steward εστιάζει σε;', choices: {A: 'GPU tuning', B: 'Ποιότητα, ορισμούς και πολιτικές δεδομένων', C: 'UI mockups', D: 'Διαχείριση firewall'}, answer: 'B'},
+		{question: 'Ποια πρακτική μειώνει ανισορροπία κλάσεων;', choices: {A: 'Feature Hashing', B: 'Min-Max Scaling', C: 'SMOTE/oversampling', D: 'Drop duplicates'}, answer: 'C'},
+		{question: 'Ποιο είναι το κύριο objective των Data Contracts;', choices: {A: 'Συμφωνημένα σχήματα/σημασιολογία μεταξύ παραγωγών-καταναλωτών', B: 'Κρυπτογράφηση TLS', C: 'UI consistency', D: 'Διαχείριση κόστους cloud'}, answer: 'A'},
+		{question: 'Ποιο από τα παρακάτω περιγράφει τον ρόλο του Data Lakehouse;', choices: {A: 'Υβριδική προσέγγιση συνδυασμού Data Lake και Warehouse', B: 'Εργαλείο virtualization', C: 'Framework για streaming data μόνο', D: 'Μηχανισμός indexing'}, answer: 'A'},
+		{question: 'Ποια προσέγγιση μειώνει τις απώλειες ακρίβειας στα numeric πεδία;', choices: {A: 'Feature Scaling', B: 'Data Tokenization', C: 'Pseudonymization', D: 'String Matching'}, answer: 'A'},
+		{question: 'Ποιο επίπεδο στο Data Architecture Stack ασχολείται με quality checks και validation;', choices: {A: 'Analytics Layer', B: 'Data Quality Layer', C: 'Application Layer', D: 'Ingestion Layer'}, answer: 'B'},
+		{question: 'Ποια τεχνολογία χρησιμοποιείται για orchestration ETL διαδικασιών;', choices: {A: 'Apache Airflow', B: 'MongoDB', C: 'Tableau', D: 'Grafana'}, answer: 'A'},
+		{question: 'Ποιο πρότυπο ορίζει διεθνώς αρχές διαχείρισης δεδομένων;', choices: {A: 'ISO 8000', B: 'IEEE 802.3', C: 'GDPR', D: 'PCI DSS'}, answer: 'A'},
+		{question: 'Τι είναι το “Data Drift Monitoring”;', choices: {A: 'Παρακολούθηση αλλαγών στην κατανομή δεδομένων στο χρόνο', B: 'Αποθήκευση backups', C: 'Οπτικοποίηση pipelines', D: 'Συγχρονισμός ροών'}, answer: 'A'},
+		{question: 'Ποια αρχή διαχωρίζει ανωνυμοποίηση από ψευδωνυμοποίηση;', choices: {A: 'Χρήση JSON', B: 'ETL pipelines', C: 'Χρονικοί περιορισμοί', D: 'Δυνατότητα ανασύνδεσης ταυτότητας (υπάρχει στην ψευδωνυμοποίηση)'}, answer: 'D'},
+		{question: 'Ποιο KPI είναι κρίσιμο για data freshness;', choices: {A: 'Precision', B: 'Timeliness/Latency', C: 'Throughput', D: 'MTBF'}, answer: 'B'},
+		{question: 'Τι εξασφαλίζουν οι ιδιότητες ACID;', choices: {A: 'Κρυπτογραφία κλειδιών', B: 'Κλιμάκωση sharding', C: 'Σταθερότητα stream offsets', D: 'Ατομικότητα, Συνεκτικότητα, Απομόνωση, Μονιμότητα'}, answer: 'D'},
+		{question: 'Ποιος είναι ο σκοπός ενός Feature Store;', choices: {A: 'Αποθήκευση logs', B: 'Οπτικοποίηση KPI', C: 'Κεντρική διαχείριση/επαναχρησιμοποίηση χαρακτηριστικών για εκπαίδευση και serving', D: 'Διαχείριση secrets'}, answer: 'C'},
+		{question: 'MDM και “golden record” στοχεύουν σε;', choices: {A: 'GPU utilization', B: 'Καθαρή, μοναδική άποψη οντοτήτων σε όλο τον οργανισμό', C: 'API rate limiting', D: 'UI localization'}, answer: 'B'},
+		{question: 'ELT υπερτερεί έναντι ETL όταν;', choices: {A: 'Δεν υπάρχει schema', B: 'Το data warehouse έχει υψηλή υπολογιστική ισχύ για in-warehouse transforms', C: 'Χρειάζονται real-time joins στο edge', D: 'Δεν υπάρχουν μετασχηματισμοί'}, answer: 'B'},
+		{question: 'Ποιο είναι το κύριο πλεονέκτημα της Data Observability;', choices: {A: 'Έγκαιρος εντοπισμός ανωμαλιών στα pipelines', B: 'Αυτόματη anonymization', C: 'Ανάλυση BI σε πραγματικό χρόνο', D: 'Αύξηση redundancy'}, answer: 'A'},
+		{question: 'Ποια μέθοδος εντοπίζει correlation drift σε δεδομένα παραγωγής;', choices: {A: 'Statistical Feature Monitoring', B: 'Batch Loading', C: 'Manual Labeling', D: 'Temporal Aggregation'}, answer: 'A'},
+		{question: 'Ποια τεχνολογία επιτρέπει distributed επεξεργασία μεγάλων datasets;', choices: {A: 'Apache Spark', B: 'Tableau', C: 'PostgreSQL', D: 'Excel'}, answer: 'A'},
+		{question: 'Ποια διαδικασία σχετίζεται με το lifecycle των δεδομένων;', choices: {A: 'Απόκτηση, αποθήκευση, χρήση, αρχειοθέτηση και διαγραφή', B: 'Κρυπτογράφηση μόνο', C: 'Καταγραφή APIs', D: 'Ανάλυση χρήσης CPU'}, answer: 'A'},
+		{question: 'Ποιο είναι το βασικό ζητούμενο του Responsible Data AI;', choices: {A: 'Διαφάνεια, λογοδοσία και ηθική χρήση δεδομένων', B: 'Απόκρυψη όλων των μεταβλητών', C: 'Περιορισμός συλλογής', D: 'Κατάργηση auditing'}, answer: 'A'},
+		{question: 'Ποιο μοντέλο governance επιτρέπει αποκεντρωμένο έλεγχο δεδομένων;', choices: {A: 'Data Mesh', B: 'Data Warehouse', C: 'Data Vault', D: 'OLAP Cube'}, answer: 'A'},
+		{question: 'Ποιο metric ανιχνεύει data drift σε αριθμητικά πεδία;', choices: {A: 'ROC AUC', B: 'PSI (Population Stability Index)', C: 'MAPE', D: 'BLEU'}, answer: 'B'},
+		{question: 'Data Provenance σημαίνει;', choices: {A: 'Καταγραφή ιστορικού προέλευσης και μετασχηματισμών', B: 'Υπολογισμός latency', C: 'Συγχρονισμός ρολογιών', D: 'Αποκλειστικά masking'}, answer: 'A'},
+		{question: 'Ποια τεχνική sampling διασφαλίζει αντιπροσώπευση ανά κατηγορία;', choices: {A: 'Simple Random', B: 'Systematic', C: 'Stratified', D: 'Reservoir'}, answer: 'C'},
+		{question: 'Ποιο πλαίσιο ορίζει ρόλους/ευθύνες για προσωπικά δεδομένα στην Ε.Ε.;', choices: {A: 'PCI-DSS', B: 'SOX', C: 'HIPAA', D: 'GDPR (υπεύθυνος, εκτελών, DPO)'}, answer: 'D'},
+		{question: 'Ποια διαδικασία ορίζει το πώς, ποιος και πότε μπορεί να αλλάξει δεδομένα;', choices: {A: 'Data Lineage', B: 'Data Access Control', C: 'Data Classification', D: 'Data Cleaning'}, answer: 'B'},
+		{question: 'Τι προσφέρει η τεχνική “Data Sharding”;', choices: {A: 'Διαχωρισμό μεγάλων βάσεων σε μικρότερα ανεξάρτητα κομμάτια', B: 'Αποκρυπτογράφηση δεδομένων', C: 'Αναπαραγωγή αρχείων για redundancy', D: 'Ενοποίηση metadata'}, answer: 'A'},
+		{question: 'Ποιο πλεονέκτημα έχει η χρήση Data Catalog σε επιχειρήσεις;', choices: {A: 'Αυτόματη τεκμηρίωση και αναζήτηση datasets', B: 'Αποκλειστική πρόσβαση στα αρχεία', C: 'Αύξηση data silos', D: 'Μείωση governance κανόνων'}, answer: 'A'},
+		{question: 'Ποια τεχνική χρησιμοποιείται για data masking;', choices: {A: 'Hashing ή substitution με ψευδοδεδομένα', B: 'Encryption AES-512', C: 'Overwriting με null', D: 'Replication'}, answer: 'A'},
+		{question: 'Ποιο εργαλείο χρησιμοποιείται για τον έλεγχο ποιότητας δεδομένων σε pipelines;', choices: {A: 'Great Expectations', B: 'Kubernetes', C: 'Docker Compose', D: 'Terraform'}, answer: 'A'},
+		{question: 'Ποια μέθοδος επαλήθευσης ακεραιότητας αρχείων είναι τυπική;', choices: {A: 'Base64 encode', B: 'CRC32 μόνο', C: 'Δακτυλικά αποτυπώματα με SHA-256', D: 'URL encoding'}, answer: 'C'},
+		{question: 'Data Observability platforms επικεντρώνονται σε;', choices: {A: 'Model tuning', B: 'SLOs για ποιότητα/φρεσκάδα/πληρότητα και αυτόματες ειδοποιήσεις', C: 'UI testing', D: 'Mobile telemetry'}, answer: 'B'},
+		
+	];
+	
+	
+	
+	
+	
+	const quizContainer = document.getElementById('quiz');
+	const resultContainer = document.getElementById('result');
+	const submitBtn = document.getElementById('submitBtn');
+	
+	function renderQuiz() {
+		questions.forEach((q, index) => {
+			const questionDiv = document.createElement('div');
+			questionDiv.className = 'question';
+			questionDiv.innerHTML = `<p><strong>${index + 1}. ${q.question}</strong></p>`;
+			
+			const choicesDiv = document.createElement('div');
+			choicesDiv.className = 'choices';
+			for (const key in q.choices) {
+				const choiceLabel = document.createElement('label');
+				choiceLabel.innerHTML = `
+            <input type="radio" name="q${index}" value="${key}">
+            ${key}. ${q.choices[key]}
+          `;
+				choicesDiv.appendChild(choiceLabel);
+			}
+			
+			questionDiv.appendChild(choicesDiv);
+			quizContainer.appendChild(questionDiv);
+		});
+	}
+	
+	function gradeQuiz() {
+		let correct = 0;
+		const questionDivs = document.querySelectorAll('.question');
+		questionDivs.forEach((div, index) => {
+			const selected = document.querySelector(`input[name="q${index}"]:checked`);
+			let feedback = div.querySelector('.feedback');
+			if (!feedback) {
+				feedback = document.createElement('p');
+				feedback.classList.add('feedback');
+				div.appendChild(feedback);
+			}
+			if (selected) {
+				if (selected.value === questions[index].answer) {
+					correct++;
+					feedback.textContent = '✔️ Σωστό!';
+					feedback.className = 'feedback correct';
+				} else {
+					feedback.textContent = `❌ Λάθος! Σωστή απάντηση: ${questions[index].answer}`;
+					feedback.className = 'feedback incorrect';
+				}
+			} else {
+				feedback.textContent = `⚠️ Δεν επιλέχθηκε απάντηση. Σωστή: ${questions[index].answer}`;
+				feedback.className = 'feedback incorrect';
+			}
+		});
+		const percentage = ((correct / questions.length) * 100).toFixed(1);
+		resultContainer.textContent = `Σκορ: ${correct}/${questions.length} (${percentage}%)`;
+	}
+	
+	renderQuiz();
+	submitBtn.addEventListener('click', gradeQuiz);
+</script>
+</body>
+</html>
